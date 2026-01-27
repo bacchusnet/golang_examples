@@ -9,18 +9,31 @@ import (
 
 func main() {
 
-	file_writer("urls.txt", "http://www.test.com")
+	_, err := file_writer("urls.txt", "http://www.test.com")
 
-	file_reader("urls.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	list, err := file_reader("urls.txt")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for index, item := range list {
+		fmt.Println(index, item)
+	}
+
 }
 
-func file_reader(filename string) {
+func file_reader(filename string) ([]string, error) {
 
 	// We open the file
 	file, err := os.Open(filename)
 
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	// We tell Golang to close the file once this function has finished running
@@ -29,30 +42,27 @@ func file_reader(filename string) {
 	// We create a buffer in memory for the contents of the file.
 	scanner := bufio.NewScanner(file)
 
+	// Create a slice to hold our items. Alternatively, if you know the size of the list, initialize with make([]string,0,100)
+	urls := []string{}
+
 	// We begin looping through the file content separated by new line characters and storing the contents in the buffer
 	for scanner.Scan() {
 
-		// We read the current string in the buffer and assign it to the line variable
-		line := scanner.Text()
-
-		fmt.Println(line)
+		// Write to our urls slice by appending each line to the current slice
+		urls = append(urls, scanner.Text())
 	}
+
+	return urls, err
+
 }
 
-func file_writer(filename string, data string) {
-
-	// Set file permission to Read-Write
-	err := os.Chmod("urls.txt", 0644)
-
-	if err != nil {
-		log.Fatal(err)
-	}
+func file_writer(filename string, data string) (string, error) {
 
 	// We tell Golang to open the file for writing and appending and if the file does not exist, create it, and give read-write permission
 	file, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
 
 	if err != nil {
-		log.Fatal(err)
+		return "Failed", err
 	}
 
 	// We tell Golang to close the file once this function has finished running
@@ -62,20 +72,19 @@ func file_writer(filename string, data string) {
 	bufferedWriter := bufio.NewWriter(file)
 
 	// We write our data to the buffer
-	_, err = bufferedWriter.WriteString("\n" + data)
+	_, err = bufferedWriter.WriteString(data + "\n")
 
 	if err != nil {
-		panic(err)
+		return "Failed", err
 	}
 
 	// We flush the buffered data to the file essentially writing to the file
 	err = bufferedWriter.Flush()
 
 	if err != nil {
-		log.Fatal(err)
+		return "Failed", err
 	}
 
-	// We set permissions back to Read-Only
-	err = os.Chmod("urls.txt", 0400)
+	return "Success", err
 
 }
