@@ -22,6 +22,7 @@ func file_reader(filename string) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	// We tell Golang to close the file once this function has finished running
 	defer file.Close()
 
