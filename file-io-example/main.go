@@ -28,7 +28,7 @@ func file_reader(filename string) {
 	// We create a buffer in memory for the contents of the file.
 	scanner := bufio.NewScanner(file)
 
-	// We begin looping through the file content and storing the file contents in the buffer
+	// We begin looping through the file content separated by new line characters and storing the contents in the buffer
 	for scanner.Scan() {
 
 		// We read the current string in the buffer and assign it to the line variable
