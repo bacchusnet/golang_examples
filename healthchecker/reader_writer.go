@@ -2,32 +2,10 @@ package main
 
 import (
 	"bufio"
-	"fmt"
-	"log"
 	"os"
 )
 
-func main() {
-
-	_, err := file_writer("urls.txt", "http://www.test.com")
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	list, err := file_reader("urls.txt")
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	for index, item := range list {
-		fmt.Println(index, item)
-	}
-
-}
-
-func file_reader(filename string) ([]string, error) {
+func File_reader(filename string) ([]string, error) {
 
 	// We open the file
 	file, err := os.Open(filename)
@@ -56,7 +34,7 @@ func file_reader(filename string) ([]string, error) {
 
 }
 
-func file_writer(filename string, data string) (string, error) {
+func File_writer(filename string, data string) (string, error) {
 
 	// We tell Golang to open the file for writing and appending and if the file does not exist, create it, and give read-write permission
 	file, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
