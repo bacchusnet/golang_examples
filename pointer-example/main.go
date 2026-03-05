@@ -90,10 +90,27 @@ func example4() {
 	}
 }
 
+// EXAMPLE 5: Sharing and accessing state across Goroutines
+
+func worker(id int, counter *int) {
+	for i := 0; i < 100; i++ {
+		(*counter)++ // All workers increment the SAME variable
+	}
+}
+
+func example5() {
+	count := 0
+	// Pass pointer so all goroutines see the same 'count'
+	go worker(1, &count)
+	go worker(2, &count)
+
+	// Note: In real code, you'd need a Mutex here to prevent race conditions!
+}
+
 func main() {
 	example1()
 	example2()
 	example3()
 	example4()
-
+	example5()
 }
